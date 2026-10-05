@@ -1,0 +1,22 @@
+# TLS credentials and local submission history
+/.tls/data/
+/.tls/**/auth
+/.submitted-full-score
+
+# Generated grading files and locks
+/.tls/problems/
+/.tls/.submit.lock
+/.tls/.grade.lock/
+/.tls/submit-*.lock
+
+# Local environment metadata
+/.agents/
+/.aws/
+/.codex/
+
+# Compiled files and Python caches
+*.out
+core
+core.*
+__pycache__/
+*.pyc
