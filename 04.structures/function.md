@@ -1,69 +1,103 @@
-# 04 — 構造体：関数・構文一覧
+# 04：関連する値を構造体にまとめる
 
-このフォルダーの `.cpp` に登場する関数と構文をまとめています。学生情報を別々の変数で扱う例から、`Student` 構造体・関数・ベクターを組み合わせる例へ進みます。
+構造体は、名前や学籍番号など、関係する値をひとまとめにする仕組みです。
 
-## 自作関数
+## 型を作る
 
-| 関数の宣言 | 用途・呼び出し例 | 定義ファイル |
+```cpp
+struct Student {
+    string name;
+    int id;
+    string department;
+    int grade;
+    double gpa;
+};
+```
+
+これで `Student` という型が使えます。中の `name` や `id` を**メンバ**と呼びます。最後の `;` を忘れないようにします。
+
+## 値を作る・読む・変更する
+
+```cpp
+Student alice = {"Alice", 259999, "IT", 1, 3.25};
+cout << alice.name;        // Alice
+alice.grade = 2;           // 学年を変更する
+```
+
+初期値は、型を作ったときのメンバの順序に合わせます。
+
+| 順序 | メンバ | 内容 |
 | --- | --- | --- |
-| `void print_student(string name, int id, string department, int grade, double gpa);` | 5つの引数を受け取り、学生情報を表示する | [students.1.cpp](students.1.cpp)、[students.2.cpp](students.2.cpp) |
-| `void print_student(Student s);` | 学生情報を1つの構造体として受け取り、表示する。`print_student(alice);` | [struct-with-functions.0.cpp](struct-with-functions.0.cpp)、[struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `Student new_student(string name, int id, string department, int grade, double gpa);` | 引数から `Student` を作って返す | [struct-with-functions.0.cpp](struct-with-functions.0.cpp) |
-| `int main()` | プログラムの開始点 | [students.0.cpp](students.0.cpp) |
+| 1 | `name` | 氏名 |
+| 2 | `id` | 学籍番号 |
+| 3 | `department` | 所属学科 |
+| 4 | `grade` | 学年 |
+| 5 | `gpa` | GPA |
 
-`print_student` の引数はファイルによって異なります。構造体を使う例では、5項目を `Student` 1つにまとめて渡します。
+`.` は「この変数の、このメンバ」を指定する記号です。
 
-## 標準ライブラリのメンバ関数・入出力
+```cpp
+Student bob;
+bob = alice;              // aliceの全メンバをbobへコピーする
+```
 
-| 項目 | 用途・記述例 | 使用ファイル |
+## 関数に渡す・関数から返す
+
+```cpp
+void print_student(Student s) {
+    cout << s.name << "\n";
+}
+
+// main の中で呼び出す
+print_student(alice);
+```
+
+名前・学籍番号・学科などを別々に渡す代わりに、`Student` 1つを渡せます。この書き方ではコピーを渡します。
+
+構造体を作って返すこともできます。
+
+```cpp
+Student new_student(string name, int id, string department,
+                    int grade, double gpa) {
+    Student s = {name, id, department, grade, gpa};
+    return s;
+}
+```
+
+| この章の関数 | すること | 定義ファイル |
 | --- | --- | --- |
-| `v.size()` | ベクターの要素数を取得する。`students.size()` | [students.2.cpp](students.2.cpp)、[struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `v.begin()` | ベクターの先頭要素を指すイテレーターを取得する | [struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `v.erase(位置)` | 指定位置の要素を削除する。`students.erase(students.begin() + 1);` | [struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `cout << 値` | 学生情報を標準出力に表示する | [students.0.cpp](students.0.cpp) |
-| `cout << unitbuf << boolalpha;` | 出力を逐次フラッシュし、真理値を文字で表示する設定 | [struct-student.0.cpp](struct-student.0.cpp) |
+| `print_student(name, id, department, grade, gpa)` | 5項目を受け取って表示する | [students.1.cpp](students.1.cpp)、[students.2.cpp](students.2.cpp) |
+| `print_student(s)` | Studentを1つ受け取って表示する | [struct-with-functions.0.cpp](struct-with-functions.0.cpp) |
+| `new_student(name, id, department, grade, gpa)` | Studentを作って返す | [struct-with-functions.0.cpp](struct-with-functions.0.cpp) |
 
-`begin() + 1` は0から数えて第1要素、つまり2番目の要素の位置です。削除後は後続の要素が詰まり、要素数が1減ります。削除した位置以降のイテレーターや参照は無効になります。
+## 複数人を配列に入れる
 
-## 構造体の構文
+```cpp
+vector<Student> students = {
+    {"Alice", 259999, "IT", 1, 3.25},
+    {"Bob",   259998, "DE", 2, 2.55}
+};
 
-| 構文 | 用途・記述例 | 使用ファイル |
-| --- | --- | --- |
-| `struct 型名 { ... };` | 構造体型を定義する。末尾の `;` が必要 | [struct-student.0.cpp](struct-student.0.cpp) |
-| メンバ変数の宣言 | `string name; int id; string department; int grade; double gpa;` | [struct-student.0.cpp](struct-student.0.cpp) |
-| `Student alice;` | 構造体型の変数を宣言する | [struct-student.0.cpp](struct-student.0.cpp) |
-| `alice.name = "Alice";` | `.` でメンバを指定して更新する | [struct-student.0.cpp](struct-student.0.cpp) |
-| `cout << alice.name;` | `.` でメンバの値を参照する | [struct-student.0.cpp](struct-student.0.cpp) |
-| `Student alice = { "Alice", 259999, "IT", 1, 3.25 };` | メンバの宣言順に値を並べて初期化する | [struct-student.init.0.cpp](struct-student.init.0.cpp) |
-| `bob = alice;` | 構造体の各メンバの値をコピーする | [struct-student.assignment.0.cpp](struct-student.assignment.0.cpp) |
-| `void print_student(Student s)` | 構造体を関数の仮引数にする。この例は値渡しなのでコピーを受け取る | [struct-with-functions.0.cpp](struct-with-functions.0.cpp) |
-| `Student new_student(...)`・`return s;` | 構造体を関数の返り値にする | [struct-with-functions.0.cpp](struct-with-functions.0.cpp) |
-| `vector<Student> students = { { ... }, { ... } };` | 構造体を要素とするベクターを作る | [struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `students[i]` | ベクターの第 `i` 要素の構造体を参照する。`print_student(students[i]);` | [struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
+for (int i = 0; i < students.size(); i++) {
+    print_student(students[i]);
+}
+```
 
-### Studentのメンバ
+`vector<Student>` はStudentの配列です。`students[0]` がAlice、`students[1]` がBobです。
 
-| 宣言順 | メンバ | 型 | 内容 |
-| --- | --- | --- | --- |
-| 0 | `name` | `string` | 氏名 |
-| 1 | `id` | `int` | 学籍番号 |
-| 2 | `department` | `string` | 所属学科 |
-| 3 | `grade` | `int` | 学年 |
-| 4 | `gpa` | `double` | GPA |
+## 配列から削除する
 
-## 共通の構文・型・演算
+```cpp
+students.erase(students.begin() + 1); // 2番目の学生を削除する
+```
 
-| 項目 | 用途・記述例 | 使用ファイル |
-| --- | --- | --- |
-| `#include <iostream>`・`<string>`・`<vector>` | 入出力・文字列・ベクターを利用するための宣言を読み込む | [students.2.cpp](students.2.cpp) |
-| `using namespace std;` | 標準ライブラリの `std::` を省略する | [students.0.cpp](students.0.cpp) |
-| `string`・`int`・`double` | 学生情報の各値の型 | [students.0.cpp](students.0.cpp) |
-| `string name = "Alice";` | 文字配列リテラルから `string` を初期化する | [students.0.cpp](students.0.cpp) |
-| `vector<string>`・`vector<int>`・`vector<double>` | 各項目を別々のベクターで管理する | [students.2.cpp](students.2.cpp) |
-| 関数宣言・定義・呼び出し | `void print_student(...);`、関数ボディ、`print_student(...)` | [students.1.cpp](students.1.cpp) |
-| `for (int i = 0; i < students.size(); i++)` | 全学生の情報を順に処理する。`<` で比較し、`++` で添字を増やす | [struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `begin() + 1` | イテレーターの位置を1要素先へ移す | [struct-with-vectors.0.cpp](struct-with-vectors.0.cpp) |
-| `return 0;` | `main` を正常終了する | [students.0.cpp](students.0.cpp) |
-| `{ ... }`・`;`・コメント・`\n` | ブロックや初期化子、文の終端、`// ...` による注釈、改行 | [struct-student.init.0.cpp](struct-student.init.0.cpp) |
+| 書き方 | 意味 |
+| --- | --- |
+| `students.size()` | 学生の人数を取得する |
+| `students.begin()` | 配列の先頭の位置を取得する |
+| `students.begin() + 1` | 先頭から1つ先、つまり2番目の位置 |
+| `students.erase(位置)` | その位置の要素を削除する |
 
-コードでは `<map>` も読み込んでいますが、`map` の操作は使っていません。このフォルダーにはJavaScript版のコードはありません。
+削除すると、後ろの要素が前に詰まり、人数が1人減ります。
+
+実際のコード：[メンバの操作](struct-student.0.cpp)・[初期化](struct-student.init.0.cpp)・[コピー](struct-student.assignment.0.cpp)・[配列と削除](struct-with-vectors.0.cpp)。
